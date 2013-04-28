@@ -12,7 +12,9 @@ import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
+import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
@@ -32,6 +34,7 @@ public class Client_Conection extends Thread{
 	private MessageConsumer con = null;
 	private Destination d = null;
 	private Client_Controller cc;
+	private Queue q;
 	/**
 	 * Konstruktor
 	 * @param serverName Server addresse
@@ -44,6 +47,8 @@ public class Client_Conection extends Thread{
 		this.raum = raum;
 		this.url = "tcp://"+serverName + ":" + serverPort;
 		this.cc = cc;
+		this.startCon();
+		
     }
 	/**
 	 * Startet die Verbindung
@@ -56,13 +61,16 @@ public class Client_Conection extends Thread{
 			c.start();
 			
 			s = c.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			d = s.createTopic(raum);
-			
-			pro = s.createProducer(d);
+			q = s.createQueue(raum);
+			//d = s.createTopic(raum);
+			//pro = s.createProducer(d);
+			pro = s.createProducer(q);
 			pro.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			
-			con = s.createConsumer(d);
+			//con = s.createConsumer(d);
+			con = s.createConsumer(q);
 			
+			this.start();
 		} catch (JMSException e) {
 			System.err.println("ERROR: " + e.getMessage());
 		} finally{

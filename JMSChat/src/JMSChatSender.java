@@ -12,7 +12,7 @@ import javax.jms.TextMessage;
 
 public class JMSChatSender {
 
-  private static String user = ActiveMQConnection.DEFAULT_USER;
+  private static String user = "Dominik";
   private static String password = ActiveMQConnection.DEFAULT_PASSWORD;
   private static String url = ActiveMQConnection.DEFAULT_BROKER_URL;//tcp://ip:port
   private static String subject = "VSDBChat";

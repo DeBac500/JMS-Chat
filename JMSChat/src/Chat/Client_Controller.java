@@ -1,6 +1,5 @@
 package Chat;
 
-import org.eclipse.swt.graphics.Color;
 
 
 /**
@@ -18,7 +17,7 @@ public class Client_Controller{
 	 * @param addr
 	 * @param port
 	 */
-	public Client_Controller(String addr , int port){
+	public Client_Controller(){
 		cg = new Client_GUI(this);
 		MyFrame mf = new MyFrame(cg,null,"Chat",100,100,500,500,true);
 	}
@@ -47,11 +46,14 @@ public class Client_Controller{
 		if(arr.length > 0){
 			if(arr[0].equals("/help") || arr[0].equals("/?") || arr[0].equals("?"))
 				this.helpman();
-			if(arr[0].equals("vsdbchat")){
+			if(arr[0].equals("/vsdbchat")){
 				if(arr.length>=4){
-					
+					cc = new Client_Conection(arr[1], 61616, arr[2], "" ,arr[3], this);
+					System.out.println("Conected!");
 				}
 			}
+			if(arr[0].charAt(0) != '/')
+				cc.sendMessage(msg);
 		}
 	}
 	/**
@@ -59,18 +61,6 @@ public class Client_Controller{
 	 */
 	
 	public static void main(String[] args){
-		boolean a =true;
-		if(args.length > 0){
-			if(args[0].charAt(0)=='d'){
-				a=false;
-				new Client_Controller("localhost",1234);
-			}else if(args.length >1){ 
-				a=false;
-				new Client_Controller(args[0],Integer.parseInt(args[1]));
-			}
-		}
-		if(a)
-			System.out.println("No valid Ipaddress or port\n <Ipaddress> <port> | Server Addresse und den Serverport angeben \n d | default werte verwenden (localhost:1234)");
-		
+		new Client_Controller();
 	}
 }
