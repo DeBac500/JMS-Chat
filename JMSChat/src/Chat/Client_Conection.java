@@ -61,24 +61,19 @@ public class Client_Conection extends Thread{
 			c.start();
 			
 			s = c.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			q = s.createQueue(raum);
-			//d = s.createTopic(raum);
-			//pro = s.createProducer(d);
-			pro = s.createProducer(q);
+			//q = s.createQueue(raum);
+			d = s.createTopic(raum);
+			pro = s.createProducer(d);
+			//pro = s.createProducer(q);
 			pro.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 			
-			//con = s.createConsumer(d);
-			con = s.createConsumer(q);
+			con = s.createConsumer(d);
+			//con = s.createConsumer(q);
 			
 			this.start();
 		} catch (JMSException e) {
 			System.err.println("ERROR: " + e.getMessage());
-		} finally{
-			try {c.close();} catch ( Exception e ) {}
-			try {s.close();} catch ( Exception e ) {}
-			try {con.close();} catch ( Exception e ) {}
-			try {pro.close();} catch ( Exception e ) {}
-		}
+		} 
 	}
 	
 	/**
@@ -97,20 +92,33 @@ public class Client_Conection extends Thread{
 	public void sendMessage(String msg){
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-			Timestamp time = new Timestamp(System.currentTimeMillis());
-			String ti = sdf.format(time);
+			//Timestamp time = new Timestamp(System.currentTimeMillis());
+			Date d = new Date();
+			String ti = sdf.format(d);
+			//System.out.println(":D");
 			TextMessage m = s.createTextMessage(ti + " " + this.usr + ": " + msg );
+			
 			pro.send(m);
 		} catch (JMSException e) {
-			System.err.println("ERROR: " + e.getMessage());
+			System.err.println("sendM_ERROR: \n" + e.getMessage());
 		}
 	}
 	/**
 	 * Thread zum empfangen von Nachrichte
 	 */
-	@Override
-	public void run() {
-		while(!this.interrupted()){
+	public void getMassage(){
+		try {
+			TextMessage message = (TextMessage) con.receive();
+			if ( message != null ) {
+				cc.handle(message.getText());
+				message.acknowledge();
+			}
+		} catch (JMSException e) {
+			System.err.println("ERROR: " + e.getMessage());
+		}
+	}
+	public void run(){
+		while(!this.isInterrupted()){
 			try {
 				TextMessage message = (TextMessage) con.receive();
 				if ( message != null ) {

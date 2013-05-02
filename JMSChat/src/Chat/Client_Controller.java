@@ -27,7 +27,7 @@ public class Client_Controller{
 	 * @param msg
 	 */
 	public void handle(String msg){
-		
+		cg.setChat(msg);
 	}
 	public void helpman(){
 		cg.setChat("/help , /? , ?	Zeigt Alle verFügbaren Befehle");
@@ -40,8 +40,7 @@ public class Client_Controller{
 	 * @param msg zu sendente Massage
 	 */
 	public void sendMessage(String msg){
-		//cc.sendMessage(msg);
-		cg.setChat(msg);
+		//cg.setChat(msg);
 		String[] arr = msg.split(" ");
 		if(arr.length > 0){
 			if(arr[0].equals("/help") || arr[0].equals("/?") || arr[0].equals("?"))
@@ -52,6 +51,9 @@ public class Client_Controller{
 					System.out.println("Conected!");
 				}
 			}
+			if(arr[0].equals("/mailbox")){
+				cc.getMassage();
+			}
 			if(arr[0].charAt(0) != '/')
 				cc.sendMessage(msg);
 		}
@@ -59,7 +61,6 @@ public class Client_Controller{
 	/**
 	 * Verbindet mit Server
 	 */
-	
 	public static void main(String[] args){
 		new Client_Controller();
 	}
