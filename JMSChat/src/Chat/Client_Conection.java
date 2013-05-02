@@ -70,7 +70,7 @@ public class Client_Conection extends Thread{
 			con = s.createConsumer(d);
 			//con = s.createConsumer(q);
 			
-			this.start();
+			//this.start();
 		} catch (JMSException e) {
 			System.err.println("ERROR: " + e.getMessage());
 		} 
@@ -117,6 +117,7 @@ public class Client_Conection extends Thread{
 			System.err.println("ERROR: " + e.getMessage());
 		}
 	}
+	
 	public void run(){
 		while(!this.isInterrupted()){
 			try {

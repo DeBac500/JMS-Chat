@@ -48,7 +48,8 @@ public class Client_Controller{
 			if(arr[0].equals("/vsdbchat")){
 				if(arr.length>=4){
 					cc = new Client_Conection(arr[1], 61616, arr[2], "" ,arr[3], this);
-					System.out.println("Conected!");
+					cg.setChat("Connected!");
+					cc.sendMessage("ist nun Verbunden!");
 				}
 			}
 			if(arr[0].equals("/mailbox")){

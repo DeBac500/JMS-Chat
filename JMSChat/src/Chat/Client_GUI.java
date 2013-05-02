@@ -13,12 +13,19 @@ import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JMenu;
+import javax.swing.JCheckBoxMenuItem;
 
 public class Client_GUI extends JPanel implements ActionListener{
 	private JTextField textField;
 	private JButton btnSenden;
 	private JTextArea textArea;
 	private Client_Controller cc;
+	private JMenuBar menuBar;
+	private JMenu mnEinstellungen;
+	private JCheckBoxMenuItem chckbxmntmAutoMailbox;
 	public Client_GUI(Client_Controller cc) {
 		this.cc = cc;
 		setLayout(new BorderLayout(0, 0));
@@ -45,6 +52,16 @@ public class Client_GUI extends JPanel implements ActionListener{
 		textArea = new JTextArea();
 		textArea.setEditable(false);
 		scrollPane.setViewportView(textArea);
+		
+		menuBar = new JMenuBar();
+		scrollPane.setColumnHeaderView(menuBar);
+		
+		mnEinstellungen = new JMenu("Einstellungen");
+		menuBar.add(mnEinstellungen);
+		
+		chckbxmntmAutoMailbox = new JCheckBoxMenuItem("Auto Mailbox");
+		chckbxmntmAutoMailbox.addActionListener(this);
+		mnEinstellungen.add(chckbxmntmAutoMailbox);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -54,7 +71,15 @@ public class Client_GUI extends JPanel implements ActionListener{
 				cc.sendMessage( message);
 				textField.setText("");
 			}
+			
 
+		}
+		if(e.getSource() == chckbxmntmAutoMailbox){
+			if(chckbxmntmAutoMailbox.isSelected()){
+				System.out.println("Selected");
+			}else if(!chckbxmntmAutoMailbox.isSelected()){
+				System.out.println("Unselected");
+			}
 		}
 	}
 	public void setChat(String msg){
