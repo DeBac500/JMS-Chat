@@ -36,18 +36,15 @@
   <!-- Run-Sender -->
 	<target name="run-sender" depends="compile" description="Runs a simple sender">
 		<echo>Running sender.</echo>
-		<java classname="JMSChatSender" fork="yes" maxmemory="100M">
+		<java classname="Client_Conection" fork="yes" maxmemory="100M">
 			<classpath refid="javac.classpath" />
 		</java>
 	</target>
-
-  <!-- Run-Receiver -->
-	<target name="run-receiver" depends="compile" description="Runs a simple receiver.">
-		<echo>Running sender.</echo>
-		<java classname="JMSChatReceiver" fork="yes" maxmemory="100M">
-			<classpath refid="javac.classpath" />
-		</java>
+	<target name="create-doc" depends="compile" description="generate documentation">
+		<javadoc sourcepath="${src.dir}" destdir="${doc.dir}" />
 	</target>
-
+	 <target name="clean-doc" description="Clean build products.">
+        <delete dir="${doc.dir}"/>
+    </target>
 
 </project>

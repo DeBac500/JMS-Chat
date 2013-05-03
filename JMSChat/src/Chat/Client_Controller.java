@@ -4,8 +4,8 @@ package Chat;
 
 /**
  * Client Controller ermögtlich komunikation zwischen GUI und Conection
- * @author Dominik, Daniel
- *
+ * @author Backhausen, Rieppel
+ * @version 0.5
  */
 public class Client_Controller{
 	private Client_GUI cg;
@@ -13,9 +13,7 @@ public class Client_Controller{
 	private String addr;
 	private int port;
 	/**
-	 * KOnstruktor mit Server addresse und port
-	 * @param addr
-	 * @param port
+	 * Konstruktor mit Server
 	 */
 	public Client_Controller(){
 		cg = new Client_GUI(this);
@@ -23,24 +21,25 @@ public class Client_Controller{
 	}
 	/**
 	 * Handle entscheidet was gmit eingehenden Nachrichten gemacht werden soll
-	 * @param id
-	 * @param msg
+	 * @param msg die eingehende Nachricht
 	 */
 	public void handle(String msg){
 		cg.setChat(msg);
 	}
+	/**
+	 * Gibt den Hilfetext aus
+	 */
 	public void helpman(){
 		cg.setChat("/help , /? , ?	Zeigt Alle verFügbaren Befehle");
 		cg.setChat("/vsdbchat <ip_message_broker> <benutzername> <chatroom>");
-		cg.setChat("/MAIL <ip_des_benutzers> <nachricht>     Sendet Mails");
+		//cg.setChat("/MAIL <ip_des_benutzers> <nachricht>     Sendet Mails");
 		cg.setChat("/MAILBOX    Ruft Mails ab");
 	}
 	/**
-	 * Sendet Messages
-	 * @param msg zu sendente Massage
+	 * Überprüft die eingaben des Users entscheidet aufgrund von befehlen bzw sendet nachrichten
+	 * @param msg zu bearbeitende Usereingabe
 	 */
 	public void sendMessage(String msg){
-		//cg.setChat(msg);
 		String[] arr = msg.split(" ");
 		if(arr.length > 0){
 			if(arr[0].equals("/help") || arr[0].equals("/?") || arr[0].equals("?"))
@@ -52,15 +51,31 @@ public class Client_Controller{
 					cc.sendMessage("ist nun Verbunden!");
 				}
 			}
-			if(arr[0].equals("/mailbox")){
-				cc.getMassage();
+			if(cc != null){
+				if(arr[0].equals("/mailbox")){
+					cc.getMassage();
+				}
+				if(arr[0].charAt(0) != '/')
+					cc.sendMessage(msg);
 			}
-			if(arr[0].charAt(0) != '/')
-				cc.sendMessage(msg);
 		}
 	}
 	/**
-	 * Verbindet mit Server
+	 * Schaltet automailbox ein
+	 */
+	public void automailboxon(){
+		if(cc != null)
+			cc.setbool(true);
+	}
+	/**
+	 * Schaltet automailbox aus
+	 */
+	public void automailboxoff(){
+		if(cc != null)
+			cc.setbool(false);
+	}
+	/**
+	 * Startet das Pogramm
 	 */
 	public static void main(String[] args){
 		new Client_Controller();

@@ -1,7 +1,6 @@
 package Chat;
 
-import java.net.*;
-import java.sql.Time;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.io.*;
@@ -12,7 +11,6 @@ import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageConsumer;
-import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
@@ -20,11 +18,10 @@ import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-import com.sun.jmx.snmp.Timestamp;
 /**
- * Erstellt Connection für den Client
- * @author Dominik, Dimitrijevic
- *
+ * Erstellt Connection für den Client und ist ein Tread um automailbox ein bzw aus zu schalten
+ * @author Backhausen, Rieppel
+ * @version 0.5
  */
 public class Client_Conection extends Thread{
 	private String usr, pwd, url, raum;
@@ -35,6 +32,7 @@ public class Client_Conection extends Thread{
 	private Destination d = null;
 	private Client_Controller cc;
 	private Queue q;
+	private boolean bool = true;
 	/**
 	 * Konstruktor
 	 * @param serverName Server addresse
@@ -70,14 +68,14 @@ public class Client_Conection extends Thread{
 			con = s.createConsumer(d);
 			//con = s.createConsumer(q);
 			
-			//this.start();
+			this.start();
 		} catch (JMSException e) {
 			System.err.println("ERROR: " + e.getMessage());
 		} 
 	}
 	
 	/**
-	 * TRennt die Verbindung
+	 * Trennt die Verbindung
 	 */
 	public void stopCom(){
 		try {c.close();} catch ( Exception e ) {}
@@ -92,10 +90,8 @@ public class Client_Conection extends Thread{
 	public void sendMessage(String msg){
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss");
-			//Timestamp time = new Timestamp(System.currentTimeMillis());
 			Date d = new Date();
 			String ti = sdf.format(d);
-			//System.out.println(":D");
 			TextMessage m = s.createTextMessage(ti + " " + this.usr + ": " + msg );
 			
 			pro.send(m);
@@ -104,22 +100,11 @@ public class Client_Conection extends Thread{
 		}
 	}
 	/**
-	 * Thread zum empfangen von Nachrichte
+	 * Ruft die Nächste Nachricht ab
 	 */
 	public void getMassage(){
-		try {
-			TextMessage message = (TextMessage) con.receive();
-			if ( message != null ) {
-				cc.handle(message.getText());
-				message.acknowledge();
-			}
-		} catch (JMSException e) {
-			System.err.println("ERROR: " + e.getMessage());
-		}
-	}
-	
-	public void run(){
-		while(!this.isInterrupted()){
+		//boolean b = true;
+		//while(b){
 			try {
 				TextMessage message = (TextMessage) con.receive();
 				if ( message != null ) {
@@ -128,6 +113,36 @@ public class Client_Conection extends Thread{
 				}
 			} catch (JMSException e) {
 				System.err.println("ERROR: " + e.getMessage());
+			}
+		//}
+	}
+	/**
+	 * Setzt bool für automailbrox zu aktivieren/deaktivieren
+	 * @param r neuer wert
+	 */
+	public void setbool(boolean r){
+		this.bool = r;
+	}
+	/**
+	 * GIbt bool zurück um automailbox zu überprüfen
+	 * @return der aktuelle automailbox zustand
+	 */
+	public boolean getbool(){
+		return this.bool;
+	}
+	@Override
+	public void run(){
+		while(!this.isInterrupted()){
+			while(bool){
+				try {
+					TextMessage message = (TextMessage) con.receive();
+					if ( message != null ) {
+						cc.handle(message.getText());
+						message.acknowledge();
+					}
+				} catch (JMSException e) {
+					System.err.println("ERROR: " + e.getMessage());
+				}
 			}
 		}
 	}

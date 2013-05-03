@@ -17,7 +17,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JCheckBoxMenuItem;
-
+/**
+ * Das Userinterface um mit dem Benutzer Interagieren zu können
+ * @author Backhasuen, Rieppel
+ * @version 0.5
+ */
 public class Client_GUI extends JPanel implements ActionListener{
 	private JTextField textField;
 	private JButton btnSenden;
@@ -26,6 +30,10 @@ public class Client_GUI extends JPanel implements ActionListener{
 	private JMenuBar menuBar;
 	private JMenu mnEinstellungen;
 	private JCheckBoxMenuItem chckbxmntmAutoMailbox;
+	/**
+	 * Konstruktor um GUI zu erstellen
+	 * @param cc der Controller um mit dem restlichen Programm interagieren zu können
+	 */
 	public Client_GUI(Client_Controller cc) {
 		this.cc = cc;
 		setLayout(new BorderLayout(0, 0));
@@ -61,6 +69,7 @@ public class Client_GUI extends JPanel implements ActionListener{
 		
 		chckbxmntmAutoMailbox = new JCheckBoxMenuItem("Auto Mailbox");
 		chckbxmntmAutoMailbox.addActionListener(this);
+		chckbxmntmAutoMailbox.setSelected(true);
 		mnEinstellungen.add(chckbxmntmAutoMailbox);
 	}
 	@Override
@@ -76,12 +85,18 @@ public class Client_GUI extends JPanel implements ActionListener{
 		}
 		if(e.getSource() == chckbxmntmAutoMailbox){
 			if(chckbxmntmAutoMailbox.isSelected()){
-				System.out.println("Selected");
+				cc.automailboxon();
+				//System.out.println("Selected");
 			}else if(!chckbxmntmAutoMailbox.isSelected()){
-				System.out.println("Unselected");
+				cc.automailboxoff();
+				//System.out.println("Unselected");
 			}
 		}
 	}
+	/**
+	 * Fügt text dem chat ausgabefenster hinzu
+	 * @param msg der neue text
+	 */
 	public void setChat(String msg){
 		textArea.setText(textArea.getText() + msg + "\n");
 	}
